@@ -257,8 +257,20 @@ export function alertModal() {
 /*
  * Display the given message in the default alert modal
  */
-export function showAlertModal(message) {
+// export function showAlertModal(message) {
+//     const modal = alertModal();
+//     modal.open();
+//     modal.updateContent(`<span>${message}</span>`);
+// }
+
+/** Custom alert modal to tailor for success or error (default). **/
+export function showAlertModal(message, status="error") {
     const modal = alertModal();
+    const icon = $(modal["$modal"]).find(".swal2-icon");
+    const cls = ["swal2-success", "swal2-error"];
+
+    icon[0].classList.remove(...cls);
+    icon[0].classList.add("swal2-"+status);
     modal.open();
     modal.updateContent(`<span>${message}</span>`);
 }

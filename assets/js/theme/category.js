@@ -1,5 +1,6 @@
-import { hooks } from '@bigcommerce/stencil-utils';
+import { hooks, api } from '@bigcommerce/stencil-utils';
 import CatalogPage from './catalog';
+import modalFactory, { showAlertModal } from './global/modal';
 import compareProducts from './global/compare-products';
 import FacetedSearch from './common/faceted-search';
 
@@ -14,11 +15,54 @@ export default class Category extends CatalogPage {
             hooks.on('sortBy-submitted', this.onSortBySubmit);
         }
 
-        /** Custom behaviors **/
+        /** Custom page behaviors **/
         $(".page.custom").each(function() {
 
             configureCustomItemImages(this);
             attachCustomHover(this);
+            configureCustomUI();
+
+            $(".add-all").on("click", function(evt) {
+
+                evt.preventDefault();
+
+                const addAllButt = $(evt.currentTarget);
+                const originalBtnVal = addAllButt.text();
+                const waitMessage = addAllButt.data('waitMessage');
+
+                let items = this.getAttribute("data-product-ids").split(" ").map(function(x) {
+
+                    return { quantity: 1, productId: parseInt(x) };
+                });
+
+                addAllButt.text(waitMessage)
+                          .prop('disabled', true);
+
+                api.cart.itemAdd(JSON.stringify({ lineItems: items }), function(err, res) {
+
+                    const errorM = err || res.data.error;
+                    const tmp = document.createElement('DIV');
+
+                    let status;
+
+                    if (errorM) {
+
+                        tmp.innerHTML = "Could not add products to cart";
+                        status = "error";
+
+                    } else {
+
+                        tmp.innerHTML = "One (1) of each product added to cart";
+                        status = "success";
+                    }
+
+                    addAllButt.text(originalBtnVal)
+                              .prop('disabled', false);
+
+                    configureCustomUI();
+                    return showAlertModal(tmp.textContent || tmp.innerText, status);
+                });
+            });
 
             // Add a resize listener to re-configure image sources.
             $(window).on("resize", () => configureCustomItemImages(this));
@@ -56,6 +100,20 @@ export default class Category extends CatalogPage {
             }, 100);
         });
     }
+}
+
+function configureCustomUI() {
+
+    const removeAll = $(".remove-all");
+
+    api.cart.getCartQuantity({}, function (_, quantity) {
+
+        if (quantity && quantity > 0) {
+
+            removeAll.css({ display: "inline-block" });
+
+        } else removeAll.hide();
+    });
 }
 
 function attachCustomHover(page) {

@@ -9,3 +9,152 @@
 .category-header-image {
     width: 100%;
 }
+
+/**** Styles for custom category page ****/
+
+@-webkit-keyframes swal2-animate-icon {
+	0% {
+		-webkit-transform: rotateX(100deg);
+	    opacity: 0;
+    }
+    100% {
+		-webkit-transform: rotateX(0deg);
+	    opacity: 1;
+    }
+}
+
+@keyframes swal2-animate-icon {
+	0% {
+		-ms-transform: rotateX(100deg);
+	    	transform: rotateX(100deg);
+	    opacity: 0;
+    }
+    100% {
+		-ms-transform: rotateX(0deg);
+	    	transform: rotateX(0deg);
+	    opacity: 1;
+    }
+}
+
+@-webkit-keyframes swal2-animate-x-mark {
+	0% {
+	    margin-top: 1.625em;
+	    -webkit-transform: scale(0.4);
+	    opacity: 0;
+	}
+	50% {
+	    margin-top: 1.625em;
+	    -webkit-transform: scale(0.4);
+	    opacity: 0;
+	}
+
+	80% {
+	    margin-top: -.375em;
+	    -webkit-transform: scale(1.15);
+	}
+	100% {
+	    margin-top: 0;
+	    -webkit-transform: scale(1);
+	    opacity: 1;
+	}
+}
+
+@keyframes swal2-animate-x-mark {
+	0% {
+	    margin-top: 1.625em;
+	    -ms-transform: scale(0.4);
+	    	transform: scale(0.4);
+	    opacity: 0;
+	}
+	50% {
+	    margin-top: 1.625em;
+	    -ms-transform: scale(0.4);
+	    	transform: scale(0.4);
+	    opacity: 0;
+	}
+
+	80% {
+	    margin-top: -.375em;
+	    -ms-transform: scale(1.15);
+	    	transform: scale(1.15);
+	}
+	100% {
+	    margin-top: 0;
+	    -ms-transform: scale(1);
+	    	transform: scale(1);
+	    opacity: 1;
+	}
+}
+
+.page.custom {
+	.custom-ui-cont {
+		display: flex;
+	    flex-wrap: wrap;
+		padding: 1rem 0 0;
+    	margin-bottom: 4rem;
+    	justify-content: center;
+		border-bottom: 1px solid #e5e5e5;
+		.actionBar {
+			margin: 0 0 2rem;
+    		flex: 1;
+			.form-field {
+				margin: 0 auto;
+				width: fit-content;
+			}
+		}
+		.custom-cart-actions {
+			margin-bottom: 2rem;
+			.button {
+				margin: 0 0 0 0.5rem;
+			}
+			.button:first-of-type {
+				margin-left: 0;
+			}
+			.remove-all {
+				display: none;
+			}
+		}
+	}
+}
+
+.modal--alert {
+	.swal2-icon .swal2-x-mark {
+		position: relative;
+	    -ms-flex-positive: 1;
+	    flex-grow: 1;
+	}
+	.swal2-icon.swal2-icon-show {
+		-webkit-animation: swal2-animate-icon .5s;
+				animation: swal2-animate-icon .5s;
+		.swal2-x-mark {
+			-webkit-animation: swal2-animate-x-mark .5s;
+					animation: swal2-animate-x-mark .5s;
+		}
+		[class^='swal2-x-mark-line'] {
+			display: block;
+		    position: absolute;
+		    height: .3125em;
+		    border-radius: .125em;
+		}
+		&.swal2-success {
+			.swal2-x-mark-line-left {
+			  	width: 1.5rem;
+			    top: 3rem;
+			    left: 1.0625em;
+			    -webkit-transform: rotate(40deg);
+			    	-ms-transform: rotate(40deg);
+			    		transform: rotate(40deg);
+			    background-color: #a5dc86;
+			}
+			.swal2-x-mark-line-right {
+			    width: 2.65rem;
+			    top: 2.425rem;
+			    right: 0.625rem;
+			    -webkit-transform: rotate(-54deg);
+			    	-ms-transform: rotate(-54deg);
+			    		transform: rotate(-54deg);
+			    background-color: #a5dc86;
+			}
+		}
+	}
+}

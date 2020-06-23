@@ -1,0 +1,21 @@
+{{log add_to_cart_url}}
+<div class="custom-ui-cont">
+    {{> components/products/filter sort=pagination.category.sort}}
+    <div class="custom-cart-actions">
+        <a href="#" {{#if settings.data_tag_enabled}} data-event-type="product-click" {{/if}} class="button button--primary add-all" data-product-ids="{{#each category.products}}{{#if @index '!==' 0}} {{/if}}{{this.id}}{{/each}}" data-wait-message="Adding all to cart...">Add All</a>
+        <a href="#" {{#if settings.data_tag_enabled}} data-event-type="product-click" {{/if}} class="button button--primary remove-all" data-wait-message="Removing all cart items...">Remove All</a>
+    </div>
+</div>
+
+{{log category.products}}
+
+<form action="{{urls.compare}}" method='POST' {{#if settings.data_tag_enabled}} data-list-name="Category: {{category.name}}" {{/if}} data-product-compare>
+    <!-- Render a custom list view specifically for special items category. -->
+    {{#if settings.data_tag_enabled}}
+        {{> components/custom/products/list category.products show_compare=category.show_compare theme_settings=theme_settings event="list" }}
+    {{else}}
+        {{> components/custom/products/list products=category.products show_compare=category.show_compare theme_settings=theme_settings}}
+    {{/if}}
+</form>
+
+{{> components/common/paginator pagination.category}}

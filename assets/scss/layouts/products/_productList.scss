@@ -249,3 +249,38 @@
         }
     }
 }
+
+/**** Custom styles for listings on custom category page ****/
+
+.page.custom {
+    .listItem-figure.custom {
+        padding: 0;
+        @include breakpoint("small") {
+            width: 30%;
+        }
+        @include breakpoint("medium") {
+            width: 35%;
+        }
+        @include breakpoint("large") {
+            width: 30%;
+        }
+    }
+    .listItem-actions {
+        .button {
+            font-size: 1rem;
+            padding: 0.85714rem 2.28571rem;
+            margin: 0 0.5rem 0 0;
+        }
+        @include breakpoint("large") {
+            width: 30%;
+            .button {
+                margin-bottom: 0.5rem;
+            }
+        }
+    }
+    @include breakpoint("large") {
+        .listItem-body {
+            vertical-align: top;
+        }
+    }
+}
