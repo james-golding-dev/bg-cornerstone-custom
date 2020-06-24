@@ -17,6 +17,13 @@ category:
 
 {{#partial "page"}}
 
+{{#if customer}}
+    <div class="customer-details-custom">
+        <span>Hi, {{customer.name}} ({{customer.email}}{{#if customer.phone}}, {{customer.phone}}{{/if}})</span>
+        <a href="/login.php?action=logout">Not you?</a>
+    </div>
+{{/if}}
+
 {{> components/common/breadcrumbs breadcrumbs=breadcrumbs}}
 {{#if category.image}}
     {{> components/common/responsive-img

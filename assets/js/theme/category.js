@@ -22,48 +22,6 @@ export default class Category extends CatalogPage {
             attachCustomHover(this);
             configureCustomUI();
 
-            $(".add-all").on("click", function(evt) {
-
-                evt.preventDefault();
-
-                const addAllButt = $(evt.currentTarget);
-                const originalBtnVal = addAllButt.text();
-                const waitMessage = addAllButt.data('waitMessage');
-
-                let items = this.getAttribute("data-product-ids").split(" ").map(function(x) {
-
-                    return { quantity: 1, productId: parseInt(x) };
-                });
-
-                addAllButt.text(waitMessage)
-                          .prop('disabled', true);
-
-                api.cart.itemAdd(JSON.stringify({ lineItems: items }), function(err, res) {
-
-                    const errorM = err || res.data.error;
-                    const tmp = document.createElement('DIV');
-
-                    let status;
-
-                    if (errorM) {
-
-                        tmp.innerHTML = "Could not add products to cart";
-                        status = "error";
-
-                    } else {
-
-                        tmp.innerHTML = "One (1) of each product added to cart";
-                        status = "success";
-                    }
-
-                    addAllButt.text(originalBtnVal)
-                              .prop('disabled', false);
-
-                    configureCustomUI();
-                    return showAlertModal(tmp.textContent || tmp.innerText, status);
-                });
-            });
-
             // Add a resize listener to re-configure image sources.
             $(window).on("resize", () => configureCustomItemImages(this));
         });
@@ -104,15 +62,159 @@ export default class Category extends CatalogPage {
 
 function configureCustomUI() {
 
+    configureAddAll();
+    configureRemoveAll();
+}
+
+function configureAddAll() {
+
+    $(".add-all").on("click", addAllToCart);
+}
+
+function addAllToCart(evt) {
+
+    evt.preventDefault();
+
+    const addAllButt = $(evt.currentTarget);
+    const originalBtnVal = addAllButt.text();
+    const waitMessage = addAllButt.data('waitMessage');
+
+    let items = this.getAttribute("data-product-ids").split(" ").map(function(x) {
+
+                    return { quantity: 1, productId: parseInt(x) };
+                }),
+        url = '/api/storefront/carts';
+
+    addAllButt.off("click")
+              .text(waitMessage)
+              .prop('disabled', true);
+
+    api.cart.getCart({}, (err, response) => {
+
+        if (err) finalize("error");
+
+        else {
+
+            if (response && response.id) url += `/${response.id}/items`;
+
+            $.ajax({
+                method: 'POST',
+                url: url,
+                data: JSON.stringify({ lineItems: items }),
+                complete: function (res, status) {
+
+                    finalize(status, res.responseJSON.id);
+                }
+            });
+        }
+    });
+
+    function finalize(status, id) {
+
+        const tmp = document.createElement('DIV');
+
+        switch (status) {
+            case "success":
+                api.cart.getCartQuantity({ cartId: id }, (err, res) => {
+
+                    if (res || res === 0) $('body').trigger('cart-quantity-update', res);
+                });
+
+                tmp.innerHTML = "One (1) of each product added to cart";
+            break;
+            case "error":
+                tmp.innerHTML = "Could not add products to cart";
+            break;
+        }
+
+        addAllButt.text(originalBtnVal)
+                  .prop('disabled', false);
+
+        configureCustomUI();
+        return showAlertModal(tmp.textContent || tmp.innerText, status);
+    }
+}
+
+function configureRemoveAll() {
+
     const removeAll = $(".remove-all");
 
-    api.cart.getCartQuantity({}, function (_, quantity) {
+    api.cart.getCart({}, (err, response) => {
 
-        if (quantity && quantity > 0) {
+        let lineItemIds = [],
+            startCount = 0;
+        
+        if (!err && response) {
 
-            removeAll.css({ display: "inline-block" });
+            const cart = response;
+            const cartLineItems = [
+                    cart.lineItems.physicalItems,
+                    cart.lineItems.digitalItems,
+                    cart.lineItems.customItems,
+                    cart.lineItems.giftCertificates
+                ].reduce((a, b) => a.concat(b))
+                    .filter(lineItem => !lineItem.parentId)
+                    .map(lineItem => lineItem.id);
 
-        } else removeAll.hide();
+            lineItemIds.push(...cartLineItems);
+        }
+
+        if  (lineItemIds.length > 0) {
+
+            let count = 0,
+                startCount = lineItemIds.length;
+
+            removeAll.off("click").on("click", function (evt) {
+
+                evt.preventDefault();
+
+                const rmvButt = $(evt.currentTarget);
+                const originalBtnVal = rmvButt.text();
+                const waitMessage = rmvButt.data('waitMessage');
+
+                let errorCount = 0;
+
+                rmvButt.off("click")
+                       .text(waitMessage)
+                       .prop('disabled', true);
+
+                lineItemIds.forEach(function(x, i) {
+
+                    api.cart.itemRemove(x, (err, res) => {
+
+                        if (err) errorCount += 1;
+                        count += 1;
+
+                        if (count === lineItemIds.length) {
+
+                            const tmp = document.createElement('DIV');
+
+                            let status;
+
+                            if (errorCount > 0) {
+
+                                status = "error";
+                                tmp.innerHTML = "Could not remove all products from cart";
+
+                            } else {
+
+                                status = "success";
+                                tmp.innerHTML = "All products removed from cart";
+                            }
+
+                            rmvButt.text(originalBtnVal)
+                                   .prop('disabled', false);
+
+                            configureRemoveAll();
+                            $('body').trigger('cart-quantity-update', (startCount-count));
+                            return showAlertModal(tmp.textContent || tmp.innerText, status);
+                        }
+                    });
+                });
+
+            }).css({ display: "inline-block" });
+
+        } else removeAll.off("click").hide();
     });
 }
 
@@ -122,6 +224,7 @@ function attachCustomHover(page) {
 }
 
 function removeCustomHover(page) {
+
     $(page).off("mouseover", customItemHover);
 }
 

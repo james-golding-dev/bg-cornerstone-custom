@@ -86,6 +86,17 @@
 	}
 }
 
+.customer-details-custom {
+    margin-bottom: 2rem;
+    text-align: right;
+    color: #a4a4a4;
+    font-size: 0.85rem;
+    a {
+    	margin-left: 0.5rem;
+    	color: #a4a4a4;
+    }
+}
+
 .page.custom {
 	.custom-ui-cont {
 		display: flex;
