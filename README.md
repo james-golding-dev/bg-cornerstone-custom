@@ -10,11 +10,11 @@
 7. If a customer is logged in - at the top of the category page show a banner that shows some customer details (i.e. name, email, phone ,etc). This should utilize the data that is rendered via Handlebars on the Customer Object.
 
 ### Outcomes
-1-2. Custom template created for Special Items category, with custom components for listing.
-3. Image mouseover results in a cycling of the product's images, setting source and srcset within promises. A list view is used for the custom listing, instead of a card view, so product action buttons do not clash with this custom behavior.
-4&6. "Add all to Cart" button implemented for the Special Items category page. All product IDs of the category are queried by the Cart API via an AJAX call, with one of each added to the cart. A modal notification is used for success and error.
-5&6. "Remove All Items" button implemented for the Special Items category page. This button is dynamically added/removed depending upon cart status, with products removed via AJAX calls to the Cart API. A modal notification is used for success and error.
-7. A logged-in customer has their details displayed above the page breadcrumbs, with an option to sign out.
+1-2. Custom template created for Special Items category, with custom components for listing.  
+3. Image mouseover results in a cycling of the product's images, setting source and srcset within promises. A list view is used for the custom listing, instead of a card view, so product action buttons do not clash with this custom behavior.  
+4&6. "Add all to Cart" button implemented for the Special Items category page. All product IDs of the category are queried by the Cart API via an AJAX call, with one of each added to the cart. A modal notification is used for success and error.  
+5&6. "Remove All Items" button implemented for the Special Items category page. This button is dynamically added/removed depending upon cart status, with products removed via AJAX calls to the Cart API. A modal notification is used for success and error.  
+7. A logged-in customer has their details displayed above the page breadcrumbs, with an option to sign out.  
 
 ### Store URL
 https://customtest.mybigcommerce.com/
