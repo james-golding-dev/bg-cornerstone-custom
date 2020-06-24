@@ -15,3 +15,9 @@
 4&6. "Add all to Cart" button implemented for the Special Items category page. All product IDs of the category are queried by the Cart API via an AJAX call, with one of each added to the cart. A modal notification is used for success and error.
 5&6. "Remove All Items" button implemented for the Special Items category page. This button is dynamically added/removed depending upon cart status, with products removed via AJAX calls to the Cart API. A modal notification is used for success and error.
 7. A logged-in customer has their details displayed above the page breadcrumbs, with an option to sign out.
+
+### Store URL
+https://customtest.mybigcommerce.com/
+
+### Preview Code
+y2hdn3oo3j
